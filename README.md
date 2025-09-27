@@ -8,9 +8,16 @@ curl с хостовой машины на порт 8081 вернет html
 
 ## Postgres
 `docker pull posgres` скачиваем image Postgres  
-`docker run --name my-postgres -d -p 5433:5432 -v ~/data:/data/pg -e 
+`docker run --name my-postgres -d -p 5433:5432 -v /home/vasa/data:/data/pg -e 
 POSTGRES_PASSWORD=password postgres:latest`  
 -- запускаем контейнер с именем `my-postgres` из скачанного образа  
 -- пробрасываем порт 5433 с хоста на дефолтный порт postgres 5432 в контейнере  
--- биндим volume через Bind Mount из папки `/home/sigmarius/data` на хосте в папку `/data/pg` в контейере  
+-- биндим volume через Bind Mount из папки `/home/vasa/data` на хосте в папку `/data/pg` в контейере  
+
+`docker rm -f my-postgres` удаляет контейнер без удаления volume  
+`ll /home/vasa/data` просматриваем содержимое папки на хосте - оно на месте  
+`mkdir test` создаем новую папку для хранения данных  
+`sudo mv data test/data` переносим папку с данными на хосте в новую папку test  
+`docker run --name my-postgres -d -p 5433:5432 -v /home/test/vasa/data:/data/pg -e
+POSTGRES_PASSWORD=password postgres:latest` снова запускаем контейнер - данные с хоста на месте  
 
