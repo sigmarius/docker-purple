@@ -1,0 +1,49 @@
+# Команда Ansible, использующая модуль setup и ее опции filter, для получения следующих параметров от управляемой машины
+# выполняется на хосте (управляющей машине)
+ansible -i hosts.ini -m setup -a 
+"filter=ansible_default_ipv4,ansible_distribution,ansible_distribution_version,ansible_hostname,ansible_env" 
+demo
+
+# Результат работы команды
+172.20.128.1 | SUCCESS => {
+    "ansible_facts": {
+        "ansible_default_ipv4": {
+            "address": "10.0.2.15",
+            "alias": "enp0s3",
+            "broadcast": "10.0.2.255",
+            "gateway": "10.0.2.2",
+            "interface": "enp0s3",
+            "macaddress": "08:00:27:1e:de:6f",
+            "mtu": 1500,
+            "netmask": "255.255.255.0",
+            "network": "10.0.2.0",
+            "prefix": "24",
+            "type": "ether"
+        },
+        "ansible_distribution": "Ubuntu",
+        "ansible_distribution_version": "20.04",
+        "ansible_env": {
+            "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+            "HOME": "/home/sigmarius",
+            "LANG": "en_US.UTF-8",
+            "LOGNAME": "sigmarius",
+            "MOTD_SHOWN": "pam",
+            "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+            "PWD": "/home/sigmarius",
+            "SHELL": "/bin/bash",
+            "SHLVL": "0",
+            "SSH_CLIENT": "172.20.138.8 45422 22",
+            "SSH_CONNECTION": "172.20.138.8 45422 10.0.2.15 22",
+            "SSH_TTY": "/dev/pts/1",
+            "TERM": "xterm-256color",
+            "USER": "sigmarius",
+            "XDG_RUNTIME_DIR": "/run/user/1000",
+            "XDG_SESSION_CLASS": "user",
+            "XDG_SESSION_ID": "17",
+            "XDG_SESSION_TYPE": "tty",
+            "_": "/bin/sh"
+        },
+        "ansible_hostname": "sigmarius"
+    },
+    "changed": false
+}
