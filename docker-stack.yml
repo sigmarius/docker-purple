@@ -1,0 +1,36 @@
+services:
+  nginx:
+    image: nginx:latest
+    networks:
+      - app_network
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/conf.d/default.conf  # Путь для подключения конфига
+    deploy:
+      mode: global  # По одной реплике на каждую ноду
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    deploy:
+      placement:
+        constraints:
+          - node.labels.postgres == true  # Привязка к ноде с лейблом
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: overlay
+    attachable: true
+
+configs:
+  nginx_config:
+    file: ./default.conf  # Используем уже созданный конфиг
