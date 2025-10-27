@@ -21,3 +21,19 @@ POSTGRES_PASSWORD=password postgres:latest`
 `docker run --name my-postgres -d -p 5433:5432 -v /home/test/vasa/data:/data/pg -e
 POSTGRES_PASSWORD=password postgres:latest` снова запускаем контейнер - данные с хоста на месте  
 
+## Ansible Roles
+### Задача
+Написать роль для создания пользователей:  
+- Проходится по массиву имён пользователей и их паролей  
+- Создаёт для каждого пользователя  
+- Генерит публичный и приватный ключ  
+- Кладёт публичную часть в authorized_keys  
+- Добавляется всех пользователей в группу docker  
+#### Требования:
+- Проходит ansible-lint  
+- vault.yml с паролями должен быть зашифрован  
+### Решение:
+- Файл с необходимыми коллекциями для роли: requirements.txt
+`ansible-galaxy install -r requirements` установка зависимостей из файла  
+- Запуск плейбука для роли  
+`ansible-playbook -i inventory all.yml --vault-id dev@.vault-pass`

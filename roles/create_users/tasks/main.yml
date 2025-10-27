@@ -1,0 +1,47 @@
+---
+- name: Установить python3-passlib (для хеширования паролей)
+  ansible.builtin.apt:
+    name: python3-passlib
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Установить необходимые пакеты
+  ansible.builtin.apt:
+    name: ["openssh-server", "sudo"]
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Создать пользователей
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    shell: "{{ create_users_default_shell }}"
+    groups: "{{ create_users_group }}"
+    append: true
+    state: present
+  loop: "{{ users }}"
+
+- name: Создать директорию .ssh для пользователей
+  ansible.builtin.file:
+    path: "/home/{{ item.name }}/.ssh"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: "0700"
+  loop: "{{ users }}"
+
+- name: Сгенерировать SSH-ключи для пользователей
+  community.crypto.openssh_keypair:
+    path: "/home/{{ item.name }}/.ssh/id_rsa"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: "0600"
+  loop: "{{ users }}"
+  register: ssh_keys
+
+- name: Добавить публичный ключ в authorized_keys
+  ansible.posix.authorized_key:
+    user: "{{ item.0.name }}"
+    state: present
+    key: "{{ item.1.public_key }}"
+  loop: "{{ users | zip(ssh_keys.results) | list }}"
